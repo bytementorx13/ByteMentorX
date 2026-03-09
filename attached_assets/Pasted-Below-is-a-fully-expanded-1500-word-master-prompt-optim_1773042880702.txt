@@ -1,0 +1,53 @@
+Below is a **fully expanded ~1500-word master prompt** optimized for giving to an AI builder so it produces the highest-quality, production-ready result. It is intentionally written as a single continuous instruction block with precise directives, strict constraints, and unambiguous requirements so the AI executes exactly as intended.
+
+---
+
+Build a production-ready, visually elite, single-page web application for a premium technical services platform brand named **ByteMentorX**. The platform represents a high-end personal mentorship and development service run under the professional alias **TechieSteve**. Do not display any real personal identity, personal data, or real name anywhere in the application. Only the name TechieSteve may appear as the mentor identity. The site must look like a top-tier modern startup landing page designed by a senior product designer. The UI must feel futuristic, intelligent, smooth, and premium — comparable to high-end SaaS landing pages. Avoid generic layouts. The design must impress immediately.
+
+Use **Next.js** as the primary framework so the application supports both frontend UI and backend API routes. If Next.js cannot be used, then use React for frontend and Node.js with Express for backend, but Next.js is strongly preferred. Styling must be implemented using **Tailwind CSS only**. All animations must be implemented using **Framer Motion**. Backend logic must be written strictly in JavaScript. Do not use TypeScript. Do not use any paid services, paid APIs, or paid UI libraries. The entire project must run using free services only and must be deployable directly on Vercel or Netlify without modification.
+
+The website must be a single page only. Do not create multiple pages or routing views. All content must exist in sections inside one scrollable page. Navigation must scroll smoothly to sections using animated scrolling. The top of the page must contain a strong hero section with a visually striking animated background, modern typography, gradient effects, and motion elements. The hero must include a bold headline communicating expertise, intelligence, and elite-level mentorship. It must immediately signal authority in software engineering and technical coaching. Under the headline include a short subtitle describing the platform as a place to learn faster, build better projects, and accelerate career growth. Include two primary call-to-action buttons labeled “Explore Services” and “Book Session.” Buttons must have glow hover effects and animated transitions.
+
+Do not include an About section anywhere. Instead, only a very short intro tagline near the hero describing TechieSteve as an expert mentor and developer is allowed. The website’s core purpose is to let users choose a service and submit a request. There must be no login system, no signup system, and no authentication flow. The platform must be frictionless so users can submit requests instantly without barriers.
+
+The main section of the site must be a visually impressive services grid composed of animated cards. Each card represents a service. Cards must animate into view when scrolled into viewport. Hovering over cards must cause scaling, glow border effects, and subtle 3D tilt motion. Clicking a card must open a modal containing a dynamic form specific to that service. The form must change fields dynamically based on which service is selected. All forms must be validated before submission. Validation must include required field checks, email format validation, numeric validation where needed, and logical validation for pricing packages.
+
+The platform must contain exactly four services.
+
+The first service is Web Development Service. The pricing for this service is not fixed and depends on user requirements. When this service is selected, a form must open asking for project description, required features, expected timeline, optional budget, and optional reference links. The system should not calculate price for this service. It should simply collect requirements and send them to backend.
+
+The second service is Consultation Service priced at ₹500 per hour. This service includes guidance for DSA, placement preparation, interview preparation, and career strategy. The form must include a dropdown for topic selection, an input for number of hours, automatic live price calculation that multiplies hours by 500, and additional fields asking the user’s current level, goals, and preferred meeting time. The calculated price must update instantly whenever the hours value changes.
+
+The third service is CS Fundamentals Teaching which operates on a package model. Subjects available must be Operating Systems, Computer Networks, and DBMS. Pricing logic must strictly follow this rule: four sessions cost ₹2000. Users can increase sessions only in multiples of four. If they increase sessions to eight, price becomes ₹4000, twelve sessions becomes ₹6000, and so on. The UI must enforce multiples of four and not allow invalid numbers. Price must update live. The form must collect subject selection, topics the user wants to learn, current knowledge level, doubts, and preferred schedule.
+
+The fourth service is Project Mentorship. This service must include a dropdown with categories Portfolio Website, Display Website, Shopping Website, Dashboard, and Other. If the user selects Other, a new text input must appear allowing them to specify a custom project type. The form must also collect project idea, required features, deadline, optional tech stack, and project complexity level.
+
+After any form submission, the frontend must execute the following sequence: validate inputs, show loading animation, send data to backend endpoint, wait for response, then show success animation. The backend must receive the data, send an email containing the submission details, optionally store the request in database, and then return success status. The confirmation message displayed to the user must read exactly: “Your request has been submitted successfully. TechieSteve will contact you soon to schedule a Google Meet.”
+
+Database usage is optional. Only implement database storage if necessary. If storage is implemented, use MongoDB Atlas free tier. The schema should store serviceType, name, email, formData, calculatedPrice, and timestamp. The database collection must be named requests. Do not use any other database provider.
+
+Email sending must be implemented using only free solutions such as EmailJS or Nodemailer with a free SMTP provider. The system must not rely on paid email APIs.
+
+The design aesthetic must be futuristic and visually impressive. The site must use a dark theme by default. Incorporate neon accents, gradient glows, glassmorphism cards, animated gradient backgrounds, hover glows, and subtle motion effects. Typography must be modern and sharp. Layout spacing must feel premium and balanced. Avoid clutter. The design must look like a professionally funded startup website rather than a template.
+
+Animations must be implemented using Framer Motion and must include hero fade-in animation, staggered service card entrance, hover scaling, modal slide-in animation, button glow pulse, and scroll-triggered section reveals. All animations must be smooth, performant, GPU-friendly, and lightweight. Avoid heavy animation libraries or large animation files.
+
+The site must include a sticky navigation bar with smooth scroll links labeled Home, Services, Pricing, and Contact. The pricing section must display a visual summary of all services and pricing models. Consultation must show ₹500 per hour, CS Fundamentals must show ₹2000 per four sessions, and Web Development and Projects must show price depends on requirements.
+
+The contact section must contain a simple message encouraging users to select a service and book a session. Include a button that scrolls back to services. The footer must contain the brand name ByteMentorX, the tagline “Build Faster. Learn Smarter. Get Ahead.”, placeholder social icons, and a line listing the tech stack used.
+
+Performance must be optimized. The site must load fast, use lazy loading where possible, and keep bundle size minimal. Images must be optimized. The final Lighthouse performance score should be at least 90. Accessibility must be implemented including semantic HTML, keyboard navigation support, ARIA labels, and sufficient color contrast.
+
+SEO basics must be included including meta title, meta description, OpenGraph tags, proper heading hierarchy, sitemap generation, and robots.txt configuration.
+
+Security must be implemented including input sanitization, server-side validation, injection prevention, and rate limiting for form submissions.
+
+Code must be production quality. Use reusable components, modular structure, clean naming conventions, constants files for configuration values, and separation of logic from UI. Avoid hardcoded values. Suggested folder structure should include components, sections, hooks, utils, constants, and api directories.
+
+Deliverables must include full source code, installation steps, environment variable setup instructions, email configuration guide, MongoDB setup steps if database is used, and deployment instructions for Vercel. The project must run immediately after installation without requiring additional modification.
+
+Generate production-ready code only. Do not generate placeholder or prototype code. Ensure everything is functional, optimized, and deployable.
+
+---
+
+If you want, I can also craft a **version of this prompt optimized specifically for v0, Bolt, or Cursor** since each of those AIs performs better with slightly different instruction structures.
