@@ -183,19 +183,6 @@ export default function Home() {
               <p className="text-sm text-muted-foreground">Build Faster. Learn Smarter. Get Ahead.</p>
             </div>
             
-            <div className="flex flex-col items-center md:items-end gap-4">
-              <div className="flex gap-4">
-                {/* Social Placeholders */}
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/5 cursor-pointer transition-colors">
-                    <span className="block w-4 h-4 bg-muted-foreground rounded-sm" />
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Powered by Next.js, Tailwind CSS & Framer Motion
-              </p>
-            </div>
           </div>
         </div>
       </footer>
