@@ -161,9 +161,7 @@ export function ConsultationForm({ onSuccess, serviceType }: FormProps) {
 const csSchema = z.object({
   ...commonSchema,
   subject: z.string().min(1, "Please select a subject"),
-  sessions: z.coerce.number().min(4, "Minimum 4 sessions").refine(val => val % 4 === 0, {
-    message: "Sessions must be in multiples of 4"
-  }),
+  sessions: z.coerce.number().min(1, "Minimum 1 session required").max(8, "Maximum 8 sessions allowed"),
   level: z.string().min(1, "Please describe your level"),
   doubts: z.string().min(5, "Please list what you want to cover"),
   schedule: z.string().min(2, "Please suggest a schedule"),
@@ -172,13 +170,12 @@ const csSchema = z.object({
 export function CSFundaForm({ onSuccess, serviceType }: FormProps) {
   const { register, handleSubmit, watch, formState: { errors } } = useForm<z.infer<typeof csSchema>>({
     resolver: zodResolver(csSchema),
-    defaultValues: { sessions: 4, subject: "" }
+    defaultValues: { sessions: 1, subject: "" }
   });
   const createRequest = useCreateRequest();
   
   const sessions = watch("sessions") || 0;
-  const validSessions = Math.max(4, Math.floor(sessions / 4) * 4); // For UI display stability
-  const price = (validSessions / 4) * 2000;
+  const price = sessions * 500;
 
   const onSubmit = (data: z.infer<typeof csSchema>) => {
     createRequest.mutate({
@@ -215,8 +212,8 @@ export function CSFundaForm({ onSuccess, serviceType }: FormProps) {
           required 
         />
         <div>
-          <PremiumInput label="Sessions (Multiples of 4)" type="number" step="4" min="4" {...register("sessions")} error={errors.sessions?.message} required />
-          <p className="text-xs text-muted-foreground mt-1.5">Each session = 1 hour · Min. 4 sessions</p>
+          <PremiumInput label="Number of Sessions" type="number" min="1" max="8" {...register("sessions")} error={errors.sessions?.message} required />
+          <p className="text-xs text-muted-foreground mt-1.5">Each session = 1 hour · Max 8 sessions</p>
         </div>
       </div>
       <PremiumInput label="Current Knowledge Level" placeholder="e.g., Know the basics but struggle with concepts" {...register("level")} error={errors.level?.message} required />
