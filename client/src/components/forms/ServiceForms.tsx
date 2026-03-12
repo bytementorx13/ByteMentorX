@@ -214,7 +214,10 @@ export function CSFundaForm({ onSuccess, serviceType }: FormProps) {
           error={errors.subject?.message} 
           required 
         />
-        <PremiumInput label="Sessions (Multiples of 4)" type="number" step="4" min="4" {...register("sessions")} error={errors.sessions?.message} required />
+        <div>
+          <PremiumInput label="Sessions (Multiples of 4)" type="number" step="4" min="4" {...register("sessions")} error={errors.sessions?.message} required />
+          <p className="text-xs text-muted-foreground mt-1.5">Each session = 1 hour · Min. 4 sessions</p>
+        </div>
       </div>
       <PremiumInput label="Current Knowledge Level" placeholder="e.g., Know the basics but struggle with concepts" {...register("level")} error={errors.level?.message} required />
       <PremiumTextarea label="Key Topics / Doubts to Cover" {...register("doubts")} error={errors.doubts?.message} required />
@@ -233,39 +236,45 @@ export function CSFundaForm({ onSuccess, serviceType }: FormProps) {
   );
 }
 
-// --- Project Mentorship Form ---
+// --- Project Guidance & Resume Review Form ---
 const projectSchema = z.object({
   ...commonSchema,
-  category: z.string().min(1, "Please select a category"),
+  focusArea: z.string().min(1, "Please select a focus area"),
+  sessions: z.coerce.number().min(1, "Minimum 1 session required"),
+  projectCategory: z.string().optional(),
   customCategory: z.string().optional(),
-  idea: z.string().min(10, "Please describe the idea"),
-  features: z.string().min(10, "Please list required features"),
-  deadline: z.string().min(2, "Deadline is required"),
-  techStack: z.string().optional(),
-  complexity: z.string().min(1, "Please select complexity"),
+  details: z.string().min(10, "Please provide more details"),
+  goals: z.string().min(5, "Please share your goals"),
+  currentStage: z.string().min(1, "Please select your current stage"),
+  schedule: z.string().min(2, "Please suggest a preferred schedule"),
 });
 
 export function ProjectForm({ onSuccess, serviceType }: FormProps) {
   const { register, handleSubmit, watch, formState: { errors } } = useForm<z.infer<typeof projectSchema>>({
     resolver: zodResolver(projectSchema),
-    defaultValues: { category: "", complexity: "" }
+    defaultValues: { sessions: 1, focusArea: "", currentStage: "", projectCategory: "" }
   });
   const createRequest = useCreateRequest();
-  
-  const selectedCategory = watch("category");
+
+  const sessions = watch("sessions") || 0;
+  const focusArea = watch("focusArea");
+  const projectCategory = watch("projectCategory");
+  const price = sessions * 300;
 
   const onSubmit = (data: z.infer<typeof projectSchema>) => {
     createRequest.mutate({
       serviceType,
       name: data.name,
       email: data.email,
+      calculatedPrice: price,
       formData: {
-        category: data.category === "other" ? data.customCategory : data.category,
-        idea: data.idea,
-        features: data.features,
-        deadline: data.deadline,
-        techStack: data.techStack,
-        complexity: data.complexity
+        focusArea: data.focusArea,
+        sessions: data.sessions,
+        projectCategory: data.projectCategory === "other" ? data.customCategory : data.projectCategory,
+        details: data.details,
+        goals: data.goals,
+        currentStage: data.currentStage,
+        schedule: data.schedule,
       },
     }, { onSuccess });
   };
@@ -276,61 +285,76 @@ export function ProjectForm({ onSuccess, serviceType }: FormProps) {
         <PremiumInput label="Your Name" {...register("name")} error={errors.name?.message} required />
         <PremiumInput label="Email Address" type="email" {...register("email")} error={errors.email?.message} required />
       </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <PremiumSelect 
-          label="Project Category" 
+        <PremiumSelect
+          label="Focus Area"
           options={[
-            { value: "portfolio", label: "Portfolio Website" },
-            { value: "display", label: "Display Website" },
-            { value: "shopping", label: "Shopping Website" },
-            { value: "dashboard", label: "Dashboard" },
-            { value: "other", label: "Other (Specify)" }
+            { value: "project_guidance", label: "Project Guidance" },
+            { value: "resume_review", label: "Resume Review" },
+            { value: "both", label: "Both (Project + Resume)" },
           ]}
-          {...register("category")} 
-          error={errors.category?.message} 
-          required 
+          {...register("focusArea")}
+          error={errors.focusArea?.message}
+          required
         />
-        {selectedCategory === "other" ? (
-          <PremiumInput label="Custom Category" {...register("customCategory")} required />
-        ) : (
-          <PremiumSelect 
-            label="Complexity Level" 
-            options={[
-              { value: "basic", label: "Basic (Static/Simple DB)" },
-              { value: "intermediate", label: "Intermediate (Auth, APIs)" },
-              { value: "advanced", label: "Advanced (Real-time, Complex Logic)" }
-            ]}
-            {...register("complexity")} 
-            error={errors.complexity?.message} 
-            required 
-          />
-        )}
+        <div>
+          <PremiumInput label="Number of Sessions" type="number" min="1" {...register("sessions")} error={errors.sessions?.message} required />
+          <p className="text-xs text-muted-foreground mt-1.5">₹300 per session (1 hour)</p>
+        </div>
       </div>
-      {selectedCategory === "other" && (
-         <PremiumSelect 
-         label="Complexity Level" 
-         options={[
-           { value: "basic", label: "Basic (Static/Simple DB)" },
-           { value: "intermediate", label: "Intermediate (Auth, APIs)" },
-           { value: "advanced", label: "Advanced (Real-time, Complex Logic)" }
-         ]}
-         {...register("complexity")} 
-         error={errors.complexity?.message} 
-         required 
-       />
+
+      {(focusArea === "project_guidance" || focusArea === "both") && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <PremiumSelect
+            label="Project Category"
+            options={[
+              { value: "portfolio", label: "Portfolio Website" },
+              { value: "display", label: "Display Website" },
+              { value: "shopping", label: "Shopping Website" },
+              { value: "dashboard", label: "Dashboard" },
+              { value: "other", label: "Other (Specify)" },
+            ]}
+            {...register("projectCategory")}
+            error={errors.projectCategory?.message}
+          />
+          {projectCategory === "other" && (
+            <PremiumInput label="Specify Project Type" {...register("customCategory")} />
+          )}
+        </div>
       )}
 
-      <PremiumTextarea label="Project Idea" placeholder="What are you trying to build?" {...register("idea")} error={errors.idea?.message} required />
-      <PremiumTextarea label="Required Features" placeholder="Core functionalities..." {...register("features")} error={errors.features?.message} required />
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <PremiumInput label="Deadline" placeholder="e.g., 2 months" {...register("deadline")} error={errors.deadline?.message} required />
-        <PremiumInput label="Preferred Tech Stack (Optional)" placeholder="e.g., MERN, Next.js" {...register("techStack")} />
-      </div>
-      
-      <div className="pt-4">
-        <PremiumButton type="submit" className="w-full" isLoading={createRequest.isPending}>
-          Request Mentorship
+      <PremiumSelect
+        label="Current Stage"
+        options={[
+          { value: "not_started", label: "Not Started Yet" },
+          { value: "in_progress", label: "In Progress" },
+          { value: "stuck", label: "Stuck / Need Guidance" },
+          { value: "review_only", label: "Ready for Review" },
+        ]}
+        {...register("currentStage")}
+        error={errors.currentStage?.message}
+        required
+      />
+
+      <PremiumTextarea
+        label={focusArea === "resume_review" ? "Resume Details / What to Review" : "Project Idea & Details"}
+        placeholder={focusArea === "resume_review" ? "Share your background, role you're targeting, and what feedback you need..." : "What are you building? What help do you need?"}
+        {...register("details")}
+        error={errors.details?.message}
+        required
+      />
+
+      <PremiumTextarea label="Your Goals" placeholder="What do you want to achieve from these sessions?" {...register("goals")} error={errors.goals?.message} required />
+      <PremiumInput label="Preferred Schedule" placeholder="e.g., Weekday evenings, Weekends" {...register("schedule")} error={errors.schedule?.message} required />
+
+      <div className="pt-4 flex items-center justify-between border-t border-white/10 mt-4">
+        <div>
+          <p className="text-sm text-muted-foreground">Estimated Total</p>
+          <p className="text-2xl font-display font-bold text-primary">₹{price}</p>
+        </div>
+        <PremiumButton type="submit" isLoading={createRequest.isPending}>
+          Book Sessions
         </PremiumButton>
       </div>
     </form>

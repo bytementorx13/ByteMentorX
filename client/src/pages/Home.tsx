@@ -28,7 +28,7 @@ const services = [
   {
     id: "csfunda" as const,
     title: "CS Fundamentals",
-    description: "Master OS, Computer Networks, and DBMS. Structured package sessions.",
+    description: "Master OS, Computer Networks, and DBMS. Each session is 1 hour. Package-based pricing.",
     icon: Code2,
     price: "₹2000 / 4 sessions",
     color: "from-orange-500 to-red-500",
@@ -36,10 +36,10 @@ const services = [
   },
   {
     id: "project" as const,
-    title: "Project Mentorship",
-    description: "End-to-end guidance to build standout projects from ideation to deployment.",
+    title: "Project Guidance & Resume Review",
+    description: "Hands-on project mentorship and professional resume review to make you stand out.",
     icon: Lightbulb,
-    price: "Custom Quote",
+    price: "₹300 / session (1 hr)",
     color: "from-green-500 to-emerald-500",
     shadow: "group-hover:shadow-[0_0_30px_rgba(34,197,94,0.3)]"
   }

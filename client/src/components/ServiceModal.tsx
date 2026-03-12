@@ -15,7 +15,7 @@ const serviceTitles = {
   webdev: "Web Development Service",
   consultation: "Consultation Service",
   csfunda: "CS Fundamentals Teaching",
-  project: "Project Mentorship",
+  project: "Project Guidance & Resume Review",
 };
 
 export function ServiceModal({ service, onClose }: ServiceModalProps) {
