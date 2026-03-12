@@ -4,44 +4,55 @@ import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
 import nodemailer from "nodemailer";
+import { connectToDatabase } from "./db";
 
-// Basic nodemailer configuration for free SMTP testing
-// For production, the user would configure actual SMTP credentials
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.ethereal.email',
-  port: parseInt(process.env.SMTP_PORT || '587'),
+  host: process.env.SMTP_HOST || "smtp.gmail.com",
+  port: parseInt(process.env.SMTP_PORT || "587"),
+  secure: false,
   auth: {
-    user: process.env.SMTP_USER || 'ethereal.user@ethereal.email',
-    pass: process.env.SMTP_PASS || 'ethereal.pass',
-  }
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
 });
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  await connectToDatabase();
+
   app.post(api.requests.create.path, async (req, res) => {
     try {
       const input = api.requests.create.input.parse(req.body);
       const request = await storage.createRequest(input);
-      
-      // Attempt to send email, but don't fail the request if it fails
+
       try {
+        const formattedDetails = Object.entries(input.formData as Record<string, unknown>)
+          .map(([k, v]) => `${k}: ${v}`)
+          .join("\n");
+
         await transporter.sendMail({
-          from: '"ByteMentorX" <noreply@bytetmentorx.com>',
-          to: "steve@bytetmentorx.com", // Send to admin
+          from: `"ByteMentorX" <${process.env.SMTP_USER}>`,
+          to: process.env.SMTP_TO || process.env.SMTP_USER,
           subject: `New Request: ${input.serviceType} from ${input.name}`,
           text: `
-New request received:
+New service request received on ByteMentorX:
+
 Name: ${input.name}
 Email: ${input.email}
 Service: ${input.serviceType}
-Price: ${input.calculatedPrice ? '₹' + input.calculatedPrice : 'Custom'}
-Details: ${JSON.stringify(input.formData, null, 2)}
-          `,
+Price: ${input.calculatedPrice ? "₹" + input.calculatedPrice : "Custom / To be discussed"}
+
+Details:
+${formattedDetails}
+
+---
+Respond to the client at: ${input.email}
+          `.trim(),
         });
       } catch (emailErr) {
-        console.error("Failed to send email:", emailErr);
+        console.error("Email send failed:", emailErr);
       }
 
       res.status(201).json(request);
@@ -49,7 +60,7 @@ Details: ${JSON.stringify(input.formData, null, 2)}
       if (err instanceof z.ZodError) {
         return res.status(400).json({
           message: err.errors[0].message,
-          field: err.errors[0].path.join('.'),
+          field: err.errors[0].path.join("."),
         });
       }
       console.error(err);

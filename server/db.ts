@@ -1,14 +1,43 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import pg from "pg";
-import * as schema from "@shared/schema";
+import mongoose from "mongoose";
 
-const { Pool } = pg;
-
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
+if (!process.env.MONGODB_URI) {
+  throw new Error("MONGODB_URI must be set.");
 }
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle(pool, { schema });
+const MONGODB_URI = process.env.MONGODB_URI;
+
+let isConnected = false;
+
+export async function connectToDatabase() {
+  if (isConnected) return;
+
+  try {
+    await mongoose.connect(MONGODB_URI, {
+      dbName: "bytementorx",
+      serverSelectionTimeoutMS: 8000,
+      tls: true,
+      tlsAllowInvalidCertificates: false,
+    });
+    isConnected = true;
+    console.log("[mongodb] Connected to MongoDB Atlas");
+  } catch (error) {
+    console.error("[mongodb] Connection failed — submissions will still work but won't be persisted until Atlas IP whitelist is configured:", (error as Error).message);
+  }
+}
+
+export function getIsConnected() {
+  return isConnected;
+}
+
+const requestSchema = new mongoose.Schema({
+  serviceType: { type: String, required: true },
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  formData: { type: mongoose.Schema.Types.Mixed, required: true },
+  calculatedPrice: { type: Number, default: null },
+  timestamp: { type: Date, default: Date.now },
+});
+
+export const RequestModel =
+  mongoose.models.Request ||
+  mongoose.model("Request", requestSchema, "requests");

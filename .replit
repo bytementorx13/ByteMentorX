@@ -37,3 +37,13 @@ author = "agent"
 task = "shell.exec"
 args = "npm run dev"
 waitForPort = 5000
+
+[userenv]
+
+[userenv.shared]
+MONGODB_URI = "mongodb+srv://bytementorx13_db_user:Ks9g1hKKHyvD0xUj@datacluster.q4ap2gi.mongodb.net/?appName=DataCluster"
+SMTP_HOST = "smtp.gmail.com"
+SMTP_PORT = "587"
+SMTP_USER = "bytementorx.13@gmail.com"
+SMTP_PASS = "ctrp veom qzij sizd"
+SMTP_TO = "bytementorx.13@gmail.com"
