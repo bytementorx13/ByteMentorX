@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 
+dotenv.config();
 if (!process.env.MONGODB_URI) {
   throw new Error("MONGODB_URI must be set.");
 }
