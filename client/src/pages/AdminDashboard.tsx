@@ -57,6 +57,7 @@ export default function AdminDashboard() {
 
   // Modal form state
   const [adminNotes, setAdminNotes] = useState("");
+  const [paymentLink, setPaymentLink] = useState("");
   const [sessionDate, setSessionDate] = useState("");
   const [sessionTime, setSessionTime] = useState("");
   const [meetingLink, setMeetingLink] = useState("");
@@ -97,6 +98,7 @@ export default function AdminDashboard() {
   function openModal(type: ModalType, request: Request) {
     setModal({ type, request });
     setAdminNotes("");
+    setPaymentLink("");
     setSessionDate("");
     setSessionTime("");
     setMeetingLink("");
@@ -396,22 +398,46 @@ export default function AdminDashboard() {
                 <>
                   <h3 className="text-lg font-display font-bold mb-1">Accept Request</h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Accepting <strong className="text-foreground">{modal.request.name}</strong>'s request. An email will be sent notifying them.
+                    Accepting <strong className="text-foreground">{modal.request.name}</strong>'s request. An acceptance email will be sent with payment details.
                   </p>
-                  <label className="block text-sm font-medium mb-1.5">Message to client (optional)</label>
-                  <textarea
-                    data-testid="input-admin-notes"
-                    value={adminNotes}
-                    onChange={(e) => setAdminNotes(e.target.value)}
-                    rows={3}
-                    className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none mb-4"
-                    placeholder="Any message to include in the acceptance email…"
-                  />
+                  <div className="space-y-4 mb-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1.5">
+                        Payment Link
+                        <span className="ml-1.5 text-xs text-muted-foreground font-normal">(Razorpay / UPI / any link)</span>
+                      </label>
+                      <input
+                        data-testid="input-payment-link"
+                        type="url"
+                        value={paymentLink}
+                        onChange={(e) => setPaymentLink(e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                        placeholder="https://rzp.io/l/... or https://upi.link/..."
+                      />
+                      {paymentLink && (
+                        <p className="text-xs text-green-400 mt-1">A payment button will be included in the email.</p>
+                      )}
+                      {!paymentLink && (
+                        <p className="text-xs text-muted-foreground mt-1">Leave blank to send acceptance without a payment link.</p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1.5">Message to client (optional)</label>
+                      <textarea
+                        data-testid="input-admin-notes"
+                        value={adminNotes}
+                        onChange={(e) => setAdminNotes(e.target.value)}
+                        rows={2}
+                        className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
+                        placeholder="Any additional message to include in the email…"
+                      />
+                    </div>
+                  </div>
                   <div className="flex gap-3 justify-end">
                     <button onClick={closeModal} className="px-4 py-2 rounded-lg border border-white/10 text-sm text-muted-foreground hover:text-foreground transition-colors">Cancel</button>
                     <button
                       data-testid="button-confirm-accept"
-                      onClick={() => submitAction(modal.request.id, "accept", { adminNotes })}
+                      onClick={() => submitAction(modal.request.id, "accept", { adminNotes, paymentLink: paymentLink || null })}
                       disabled={!!actionLoading}
                       className="px-4 py-2 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-500 transition-colors disabled:opacity-60"
                     >

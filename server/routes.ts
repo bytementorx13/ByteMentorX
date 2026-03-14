@@ -139,13 +139,23 @@ function buildStatusEmail(
   serviceType: string,
   accepted: boolean,
   adminNotes?: string | null,
+  paymentLink?: string | null,
 ) {
   const serviceLabel = SERVICE_LABELS[serviceType] || serviceType;
   if (accepted) {
+    const paymentBlock = paymentLink
+      ? `<div style="margin:24px 0;padding:20px 24px;background:linear-gradient(135deg,#1a2e1a,#0f2020);border:1px solid #166534;border-radius:10px;">
+          <p style="margin:0 0 8px;font-size:12px;color:#86efac;text-transform:uppercase;letter-spacing:.1em;font-weight:600;">Payment Required</p>
+          <p style="margin:0 0 16px;font-size:14px;color:#d1fae5;line-height:1.5;">To confirm your booking, please complete your payment using the link below.</p>
+          <a href="${paymentLink}" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;font-size:14px;font-weight:700;border-radius:8px;text-decoration:none;">Complete Payment</a>
+          <p style="margin:12px 0 0;font-size:12px;color:#6b7280;word-break:break-all;">${paymentLink}</p>
+        </div>`
+      : `<p style="color:#94a3b8;font-size:14px;line-height:1.6;margin-top:4px;">We will reach out to you shortly to confirm the next steps and schedule your session.</p>`;
+
     return emailLayout(`
       <h2 style="margin:0 0 16px;font-size:22px;color:#a5b4fc;font-weight:700;">Great News, ${name}!</h2>
       <p style="color:#e2e8f0;font-size:15px;line-height:1.6;">Your request for <strong>${serviceLabel}</strong> has been <strong style="color:#4ade80;">accepted</strong>.</p>
-      <p style="color:#94a3b8;font-size:14px;line-height:1.6;">We will reach out to you shortly to confirm the next steps and schedule your session.</p>
+      ${paymentBlock}
       ${adminNotes ? `<div style="margin:20px 0;padding:16px;background:#1a2e1a;border-left:4px solid #4ade80;border-radius:6px;"><p style="margin:0;color:#86efac;font-size:14px;">${adminNotes}</p></div>` : ""}
       <p style="color:#6b7280;font-size:13px;margin-top:24px;">— TechieSteve · ByteMentorX</p>
     `);
@@ -281,7 +291,7 @@ export async function registerRoutes(
       let updates: Record<string, unknown> = {};
 
       if (action === "accept") {
-        updates = { status: "accepted", adminNotes: adminNotes || null };
+        updates = { status: "accepted", adminNotes: adminNotes || null, paymentLink: req.body.paymentLink || null };
       } else if (action === "reject") {
         updates = { status: "rejected", adminNotes: adminNotes || null };
       } else if (action === "schedule") {
@@ -307,7 +317,7 @@ export async function registerRoutes(
         await sendEmail({
           to: updated.email,
           subject: `Your ${SERVICE_LABELS[updated.serviceType] || updated.serviceType} Request Has Been Accepted`,
-          html: buildStatusEmail(updated.name, updated.serviceType, true, adminNotes),
+          html: buildStatusEmail(updated.name, updated.serviceType, true, adminNotes, req.body.paymentLink || null),
         });
       } else if (action === "reject") {
         await sendEmail({

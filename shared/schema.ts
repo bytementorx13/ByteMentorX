@@ -35,6 +35,7 @@ export type AdminRequest = {
   sessionDate: string | null;
   sessionTime: string | null;
   meetingLink: string | null;
+  paymentLink: string | null;
   adminNotes: string | null;
   timestamp: Date | string;
 };

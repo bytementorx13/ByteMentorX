@@ -78,6 +78,7 @@ function docToAdminRequest(doc: any): AdminRequest {
     sessionDate: doc.sessionDate ?? null,
     sessionTime: doc.sessionTime ?? null,
     meetingLink: doc.meetingLink ?? null,
+    paymentLink: doc.paymentLink ?? null,
     adminNotes: doc.adminNotes ?? null,
     timestamp: doc.timestamp,
   };

@@ -53,6 +53,7 @@ const requestSchema = new mongoose.Schema(
     sessionDate: { type: String, default: null },
     sessionTime: { type: String, default: null },
     meetingLink: { type: String, default: null },
+    paymentLink: { type: String, default: null },
     adminNotes: { type: String, default: null },
   },
   { timestamps: { createdAt: "timestamp", updatedAt: "updatedAt" } },
