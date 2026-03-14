@@ -5,9 +5,12 @@ import { api } from "@shared/routes";
 import { z } from "zod";
 import nodemailer from "nodemailer";
 import { connectToDatabase } from "./db";
+import dotenv from "dotenv";
 
-const ADMIN_ID = "admin";
-const ADMIN_PASSWORD = "Admin@1";
+dotenv.config();
+
+const ADMIN_ID = process.env.ADMIN_ID || "admin";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Admin@1";
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || "smtp.gmail.com",
