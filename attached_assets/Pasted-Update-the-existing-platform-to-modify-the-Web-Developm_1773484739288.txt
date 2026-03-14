@@ -1,0 +1,325 @@
+Update the existing platform to modify the Web Development workflow and ensure secure payment verification.
+
+Current stack:
+
+* Next.js
+* MongoDB
+* Razorpay
+* Nodemailer
+* Google Calendar / Google Meet
+
+---
+
+1. SERVICE TYPES
+
+Services offered:
+
+1. Web Development (custom project)
+2. Consultancy (DSA / Interview Prep)
+3. CS Fundamentals
+4. Project Guidance & Resume Review
+
+Each service has a different flow.
+
+---
+
+2. UPDATED WEB DEVELOPMENT FLOW
+
+Step 1
+User submits a web development request.
+
+The request form includes:
+
+* Name
+* Email
+* Project description
+* Budget estimate (optional)
+* Deadline expectation
+
+The request is stored in MongoDB with status:
+
+status = "pending"
+
+---
+
+Step 2
+Admin reviews request in the admin dashboard.
+
+Admin actions available:
+ACCEPT
+REJECT
+
+---
+
+Step 3
+If admin clicks ACCEPT:
+
+The system must:
+
+1. Create a Google Calendar event.
+2. Generate a Google Meet link.
+3. Send an email to the user with the meeting link to discuss requirements.
+
+Email content example:
+
+Subject:
+Your Web Development Request Has Been Accepted
+
+Body:
+
+Hello <Name>,
+
+Your web development request has been accepted.
+
+We will first discuss your requirements in a short meeting.
+
+Meeting Details:
+Date: <chosen date>
+Time: <chosen time>
+
+Meeting Link: <Google Meet Link>
+
+After the meeting we will finalize the project price and timeline.
+
+Regards,
+ByteMentorX
+
+---
+
+Step 4
+After the meeting discussion, the admin can set:
+
+* Final Project Price
+* Project Deadline
+
+Admin clicks:
+
+SEND ADVANCE PAYMENT LINK
+
+---
+
+Step 5
+System generates Razorpay payment link for:
+
+50% ADVANCE PAYMENT.
+
+Example:
+
+Total price = ₹20,000
+Advance = ₹10,000
+
+---
+
+Step 6
+System sends email:
+
+Subject:
+Project Confirmation & Advance Payment
+
+Body:
+
+Hello <Name>,
+
+Thank you for discussing your project with us.
+
+Project Price: ₹<final_price>
+Delivery Deadline: <date>
+
+To begin development, please complete the advance payment using the link below.
+
+<RAZORPAY_PAYMENT_LINK>
+
+Once payment is confirmed, we will begin working on your project.
+
+---
+
+Step 7
+After project completion:
+
+Admin clicks:
+
+SEND FINAL PAYMENT LINK
+
+System generates Razorpay payment link for remaining 50%.
+
+---
+
+3. SESSION SERVICES FLOW
+   (Consultancy, CS Fundamentals, Project Guidance, Resume Review)
+
+These services require payment FIRST.
+
+Flow:
+
+User selects service
+→ Razorpay checkout opens
+→ Payment completed
+→ Request marked as "paid"
+
+Then admin schedules session.
+
+---
+
+4. SESSION SCHEDULING
+
+Admin dashboard must include button:
+
+SCHEDULE SESSION
+
+Admin selects:
+
+Date
+Time
+
+System then:
+
+1. Creates Google Calendar event in:
+   [bytementorx.13@gmail.com](mailto:bytementorx.13@gmail.com)
+
+2. Generates Google Meet link
+
+3. Sends confirmation email to user with:
+
+Service name
+Date
+Time
+Meet link
+
+---
+
+5. DATABASE SCHEMA UPDATE
+
+MongoDB request schema:
+
+Request {
+name
+email
+serviceType
+description
+estimatedBudget
+finalPrice
+advancePaid
+finalPaid
+meetingLink
+sessionDate
+sessionTime
+projectDeadline
+razorpayOrderId
+razorpayPaymentId
+paymentStatus
+status
+createdAt
+}
+
+---
+
+6. ADMIN DASHBOARD
+
+Admin page must show requests sorted by:
+
+createdAt DESC (most recent first)
+
+Columns:
+
+Name
+Email
+Service
+Status
+Payment Status
+Created Date
+Actions
+
+Actions vary by service type.
+
+---
+
+7. SECURE PAYMENT IMPLEMENTATION
+
+Payments must be fake-proof.
+
+Implement Razorpay security measures:
+
+1. Razorpay Order Creation on Backend only.
+
+2. Verify Payment Signature.
+
+Example verification:
+
+Use HMAC SHA256 with Razorpay secret key to verify:
+
+order_id + "|" + payment_id
+
+Compare generated signature with Razorpay signature.
+
+---
+
+8. WEBHOOK SECURITY
+
+Implement Razorpay Webhooks.
+
+Events to listen for:
+
+payment.captured
+payment.failed
+
+Webhook endpoint must:
+
+* verify Razorpay webhook signature
+* update payment status in MongoDB
+* prevent fake payment confirmations
+
+---
+
+9. EMAIL SYSTEM
+
+Use Nodemailer with Gmail SMTP.
+
+Sender email:
+
+[bytementorx.13@gmail.com](mailto:bytementorx.13@gmail.com)
+
+Emails required:
+
+request received
+request accepted
+meeting invite
+advance payment link
+payment confirmation
+session booking
+rejection email
+
+---
+
+10. ADMIN SECURITY
+
+Admin routes must be protected.
+
+Example routes:
+
+/admin
+/admin/requests
+/admin/schedule
+/admin/payments
+
+Use authentication to ensure only admin can access.
+
+---
+
+11. UI REQUIREMENTS
+
+Admin dashboard must display requests in table format.
+
+Columns:
+
+Name
+Email
+Service
+Price
+Payment Status
+Request Status
+Created Date
+Actions
+
+---
+
+Implement the system using clean modular code with Next.js API routes.

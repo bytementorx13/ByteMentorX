@@ -1,0 +1,281 @@
+Extend the existing project with an admin system, payment system, and scheduling system.
+
+The current tech stack is:
+
+* Next.js (frontend + API routes)
+* MongoDB (database)
+* Razorpay (payments)
+* Nodemailer (email)
+
+The website already stores service requests in MongoDB.
+
+Add the following functionality.
+
+---
+
+1. SERVICE TYPES
+
+The platform provides 4 services:
+
+1. Web Development (custom pricing)
+2. Consultancy (DSA / Interview Prep)
+3. CS Fundamentals
+4. Project Guidance & Resume Review
+
+These services have different payment flows.
+
+---
+
+2. PAYMENT FLOW RULES
+
+A. WEB DEVELOPMENT
+
+Web development projects require:
+
+Step 1:
+User submits request form.
+
+Step 2:
+Admin reviews the request in the admin dashboard.
+
+Step 3:
+Admin accepts the request and sets a custom project price.
+
+Step 4:
+System sends an email to the user with a Razorpay payment link for:
+50% ADVANCE PAYMENT.
+
+Step 5:
+After the project is completed, the admin can trigger another payment link for the remaining:
+50% FINAL PAYMENT.
+
+MongoDB fields needed:
+
+serviceType
+totalPrice
+advancePaid (boolean)
+finalPaid (boolean)
+
+---
+
+B. CONSULTANCY / CS FUNDAMENTALS / PROJECT GUIDANCE / RESUME REVIEW
+
+For these services the payment must happen BEFORE booking the session.
+
+Flow:
+
+Step 1:
+User selects service and submits request.
+
+Step 2:
+System immediately generates Razorpay checkout.
+
+Step 3:
+User completes payment.
+
+Step 4:
+After payment success:
+
+* store payment status in MongoDB
+* mark request as "paid"
+* send confirmation email
+
+Step 5:
+Admin later schedules the session from the admin dashboard.
+
+---
+
+3. ADMIN DASHBOARD
+
+Create a protected admin page.
+
+Only admin should access it.
+
+Admin should see all requests from MongoDB sorted by:
+
+MOST RECENT FIRST.
+
+Each request card should show:
+
+Name
+Email
+Service Type
+Price
+Payment Status
+Request Date
+Current Status
+
+Status options:
+
+pending
+accepted
+rejected
+paid
+scheduled
+completed
+
+---
+
+4. ADMIN ACTIONS
+
+Admin must have buttons:
+
+ACCEPT
+REJECT
+SCHEDULE SESSION
+
+WEB DEVELOPMENT REQUEST:
+
+When admin clicks ACCEPT:
+
+* admin enters total project price
+* system generates Razorpay payment link for 50% advance
+* email user payment link
+
+---
+
+5. SESSION SERVICES (CONSULTANCY etc.)
+
+After payment success:
+
+Admin dashboard must allow:
+
+SCHEDULE SESSION
+
+Admin chooses:
+
+Date
+Time
+
+---
+
+6. GOOGLE MEET + GOOGLE CALENDAR
+
+When admin schedules a session:
+
+The system should:
+
+1. Create a Google Calendar event in:
+   [bytementorx.13@gmail.com](mailto:bytementorx.13@gmail.com)
+
+2. Generate a Google Meet link.
+
+3. Save event info in MongoDB.
+
+4. Send confirmation email to user.
+
+Email must include:
+
+Service name
+Session date
+Session time
+Google Meet link
+
+---
+
+7. EMAIL SYSTEM
+
+Use Nodemailer with Gmail SMTP.
+
+Sender email:
+[bytementorx.13@gmail.com](mailto:bytementorx.13@gmail.com)
+
+Emails required:
+
+* request received
+* request accepted
+* payment link
+* payment confirmation
+* session booking confirmation
+* rejection email
+
+---
+
+8. DATABASE STRUCTURE
+
+Update MongoDB schema:
+
+Request {
+name
+email
+serviceType
+formData
+totalPrice
+paymentStatus
+requestStatus
+razorpayOrderId
+razorpayPaymentId
+meetingLink
+sessionDate
+sessionTime
+createdAt
+}
+
+---
+
+9. RAZORPAY INTEGRATION
+
+Use Razorpay orders API.
+
+Backend should:
+
+createOrder()
+verifyPaymentSignature()
+
+Never expose Razorpay secret key to frontend.
+
+---
+
+10. ADMIN SECURITY
+
+Protect admin routes using authentication.
+
+Example:
+
+/admin
+/admin/requests
+/admin/schedule
+
+Only admin login should access them.
+
+---
+
+11. UI REQUIREMENTS
+
+Admin dashboard should include:
+
+Table or cards displaying requests.
+
+Columns:
+
+Name
+Service
+Email
+Price
+Payment
+Status
+Actions
+
+---
+
+12. SORTING
+
+All requests must be sorted by:
+
+createdAt descending
+
+---
+
+13. OPTIONAL IMPROVEMENT
+
+After successful payment:
+
+Automatically mark request as:
+
+"paid"
+
+and show it in the admin dashboard.
+
+---
+
+Implement clean modular code and reusable API routes.

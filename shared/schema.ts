@@ -17,5 +17,24 @@ export type RequestResponse = {
   email: string;
   formData: Record<string, unknown>;
   calculatedPrice: number | null;
-  timestamp: Date;
+  status: string;
+  paymentStatus: string;
+  timestamp: Date | string;
+};
+
+export type AdminRequest = {
+  id: string;
+  serviceType: string;
+  name: string;
+  email: string;
+  formData: Record<string, unknown>;
+  calculatedPrice: number | null;
+  finalPrice: number | null;
+  status: string;
+  paymentStatus: string;
+  sessionDate: string | null;
+  sessionTime: string | null;
+  meetingLink: string | null;
+  adminNotes: string | null;
+  timestamp: Date | string;
 };
