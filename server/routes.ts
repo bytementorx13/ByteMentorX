@@ -3,26 +3,16 @@ import type { Server } from "http";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
-import nodemailer from "nodemailer";
-import SMTPTransport from "nodemailer/lib/smtp-transport";
+import Mailjet from "node-mailjet";
 import { connectToDatabase } from "./db";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 const ADMIN_ID = process.env.ADMIN_ID || "admin";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Admin@1";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin";
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "smtp.gmail.com",
-  port: parseInt(process.env.SMTP_PORT || "587"),
-  secure: false,
-  family: 4,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-} as SMTPTransport.Options);
+const mailjet = new Mailjet({
+  apiKey: process.env.MAILJET_API_KEY!,
+  apiSecret: process.env.MAILJET_SECRET_KEY!,
+});
 
 const SERVICE_LABELS: Record<string, string> = {
   webdev: "Web Development Service",
@@ -63,16 +53,23 @@ async function sendEmail(opts: {
   subject: string;
   html: string;
 }) {
+  const adminEmail = process.env.ADMIN_EMAIL || "bytementorx.13@gmail.com";
+
   try {
-    await transporter.sendMail({
-      from: `"ByteMentorX" <${process.env.SMTP_USER}>`,
-      to: opts.to,
-      replyTo: process.env.SMTP_USER,
-      subject: opts.subject,
-      html: opts.html,
+    await mailjet.post("send", { version: "v3.1" }).request({
+      Messages: [
+        {
+          From: { Email: adminEmail, Name: "ByteMentorX" },
+          To: [{ Email: opts.to }],
+          ReplyTo: { Email: adminEmail },
+          Subject: opts.subject,
+          HTMLPart: opts.html,
+        },
+      ],
     });
-  } catch (err) {
-    console.error("Email send failed:", err);
+    console.log(`[email] Delivered → ${opts.to}`);
+  } catch (err: any) {
+    console.error("[email] Send failed:", err?.response?.data || err?.message || err);
   }
 }
 
@@ -239,7 +236,7 @@ export async function registerRoutes(
         input.calculatedPrice,
       );
       await sendEmail({
-        to: process.env.SMTP_TO || process.env.SMTP_USER || "",
+        to: process.env.ADMIN_EMAIL || "bytementorx.13@gmail.com",
         subject: `[ByteMentorX] New Request — ${SERVICE_LABELS[input.serviceType] || input.serviceType} from ${input.name}`,
         html: adminHtml,
       });
