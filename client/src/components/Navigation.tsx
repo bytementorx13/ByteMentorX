@@ -58,7 +58,7 @@ export function Navigation() {
 
         {/* Tagline */}
         <span className="text-xs md:text-sm text-foreground/60 hidden sm:block">
-          Build Faster. Learn Smarter.
+          Build Faster. Learn Smarter. Get Ahead.
         </span>
       </div>
     </div>
