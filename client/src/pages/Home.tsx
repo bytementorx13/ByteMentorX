@@ -5,6 +5,7 @@ import { Navigation } from "@/components/Navigation";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { PremiumButton } from "@/components/ui/PremiumButton";
 import { ServiceModal, type ServiceType } from "@/components/ServiceModal";
+import { FaInstagram, FaLinkedin, FaFacebook } from "react-icons/fa";
 
 const services = [
   {
@@ -170,22 +171,69 @@ export default function Home() {
       </main>
 
       {/* FOOTER */}
-      <footer className="border-t border-white/10 bg-background/50 backdrop-blur-lg py-12 mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-6 h-6 rounded bg-gradient-to-tr from-primary to-secondary flex items-center justify-center font-display font-bold text-xs text-background">
-                  B
-                </div>
-                <span className="font-display font-bold text-lg">ByteMentorX</span>
-              </div>
-              <p className="text-sm text-muted-foreground">Build Faster. Learn Smarter. Get Ahead.</p>
-            </div>
-            
-          </div>
+      <footer className="border-t border-white/10 bg-background/50 backdrop-blur-lg py-10 mt-20">
+  <div className="max-w-6xl mx-auto px-4 sm:px-6">
+
+    <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+
+      {/* LEFT: Logo + Name + Tagline */}
+      <div className="flex items-center gap-3">
+        <img
+          src="/b-logo.png"
+          alt="ByteMentorX Logo"
+          className="h-10 w-auto object-contain"
+        />
+
+        <div className="flex flex-col leading-tight">
+          <span className="font-display font-bold text-lg">
+            ByteMentor<span className="text-primary">X</span>
+          </span>
+          <span className="text-xs text-muted-foreground">
+            Build Faster. Learn Smarter. Get Ahead.
+          </span>
         </div>
-      </footer>
+      </div>
+
+      {/* CENTER: Social Icons */}
+      <div className="flex items-center gap-5">
+        <a
+          href="https://instagram.com/yourprofile"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-muted-foreground hover:text-primary transition text-xl"
+        >
+          <FaInstagram />
+        </a>
+
+        <a
+          href="https://linkedin.com/in/yourprofile"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-muted-foreground hover:text-primary transition text-xl"
+        >
+          <FaLinkedin />
+        </a>
+
+        <a
+          href="https://facebook.com/yourprofile"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-muted-foreground hover:text-primary transition text-xl"
+        >
+          <FaFacebook />
+        </a>
+      </div>
+
+      {/* RIGHT: Credit */}
+      <div>
+        <p className="text-sm text-muted-foreground">
+          Designed by <span className="text-primary font-medium">TechieSteve</span>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</footer>
 
       {/* MODAL MANAGER */}
       {selectedService && (
