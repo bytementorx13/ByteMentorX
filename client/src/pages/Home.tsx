@@ -197,7 +197,7 @@ export default function Home() {
       {/* CENTER: Social Icons */}
       <div className="flex items-center gap-5">
         <a
-          href="https://instagram.com/yourprofile"
+          href="https://www.instagram.com/bytementorx/"
           target="_blank"
           rel="noopener noreferrer"
           className="text-muted-foreground hover:text-primary transition text-xl"
@@ -206,7 +206,7 @@ export default function Home() {
         </a>
 
         <a
-          href="https://linkedin.com/in/yourprofile"
+          href="https://www.linkedin.com/company/bytementorx/"
           target="_blank"
           rel="noopener noreferrer"
           className="text-muted-foreground hover:text-primary transition text-xl"
